@@ -1,0 +1,24 @@
+j{
+  "name": "labecommerce-backend",
+  "version": "1.0.0",
+  "description": "exercicio complementar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonardo-pereira-da-costa/labecommerce-backend.git"
+  },
+  "keywords": [
+    "labenu",
+    "fullstack",
+    "backend"
+  ],
+  "author": "leonardo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leonardo-pereira-da-costa/labecommerce-backend/issues"
+  },
+  "homepage": "https://github.com/leonardo-pereira-da-costa/labecommerce-backend#readme"
+}
