@@ -1,3 +1,5 @@
+import { type } from "os"
+
 export type usuarios = {
     id: string,
     email: string,
@@ -12,8 +14,14 @@ export type produto = {
 }
 
 export type compras = {
-    userid: string,
-    productid: string,
+    userId: string,
+    productId: string,
     quantity: number,
     totalPrice: number
+}
+
+ export enum Categoria {
+    CLOTHES = "roupas",
+    SHOES = "calçados",
+    ACCESSORIES = "acessorios"
 }
