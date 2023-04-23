@@ -1,26 +1,26 @@
 import { type } from "os"
 
-export type usuarios = {
+export type TUsers = {
     id: string,
     email: string,
     password: string
 }
 
-export type produto = {
+export type TProduct = {
     id: string,
     name: string,
     price: number,
     category: string
 }
 
-export type compras = {
+export type TPurchases = {
     userId: string,
     productId: string,
     quantity: number,
     totalPrice: number
 }
 
- export enum Categoria {
+ export enum Category {
     CLOTHES = "roupas",
     SHOES = "calçados",
     ACCESSORIES = "acessorios"
