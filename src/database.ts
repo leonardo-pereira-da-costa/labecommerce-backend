@@ -1,6 +1,6 @@
-import { usuarios, produto, compras, Categoria } from "./types";
+import { TUsers, TProduct, TPurchases, Category } from "./types";
 
-export const users: usuarios[] = [
+export const users: TUsers[] = [
     {
         id: "Léo",
         email: "eloleo@hotmail.com",
@@ -28,24 +28,24 @@ export function getAllUsers (){
 
 getAllUsers()
 
-export const prod: produto[] = [
+export const prod: TProduct[] = [
     {
         id: "01",
         name: "Chinelo",
         price: 50,
-        category: Categoria.SHOES
+        category: Category.SHOES
     },
 
     {
         id: "02",
         name: "Tenis",
         price: 100,
-        category: Categoria.SHOES
+        category: Category.SHOES
     }
 ]
 
-export function createProduct (id: string, name: string, price: number, category: Categoria) {
-    const newProduct : produto = {id, name, price, category}
+export function createProduct (id: string, name: string, price: number, category: Category) {
+    const newProduct : TProduct = {id, name, price, category}
     prod.push(newProduct)
     console.log("Produto criado com sucesso!")
 }
@@ -62,11 +62,11 @@ export function getProductById (id: string) {
     })
 }
 
-export function queryProductsByName (q: string) : produto[]{
+export function queryProductsByName (q: string) : TProduct[]{
     return prod.filter((prod) => prod.name.toLowerCase().includes(q.toLowerCase()))
 }
 
-export const sacola: compras[] = [
+export const purchase: TPurchases[] = [
     {
         userId: "Léo",
         productId: "01",
@@ -83,20 +83,20 @@ export const sacola: compras[] = [
 ]
 
 export function createPurchase (userId: string, productId: string, quantity: number, totalPrice: number) : string{
-    sacola.push({userId, productId, quantity, totalPrice})
+    purchase.push({userId, productId, quantity, totalPrice})
     return "Compra realizada com sucesso!"
 }
 
-export function getAllPurchasesFromUserId (userIdToSearch: string) : compras[] {
-    return sacola.filter((sacola) => sacola.userId === userIdToSearch)}
+export function getAllPurchasesFromUserId (userIdToSearch: string) : TPurchases[] {
+    return purchase.filter((purchase) => purchase.userId === userIdToSearch)}
 
-const resultado = sacola.reduce((acc, current)=> acc + (current.quantity*current.totalPrice), 0)
+const resultado = purchase.reduce((acc, current)=> acc + (current.quantity*current.totalPrice), 0)
 
 console.log(resultado);
 
 
 export function creaUsu (id: string, email: string, password: string) : void {
-    const novoUsu : usuarios ={
+    const novoUsu : TUsers ={
         id,
         email,
         password
