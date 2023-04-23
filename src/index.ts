@@ -58,3 +58,55 @@ app.post('/purchases', (req: Request, res: Response)=>{
     purchase.push(newPurchase)
     res.status(201).send("Compra cadastrada com sucesso")
 })
+
+app.get("/products/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+    const result = prod.find(prod => prod.id === id)
+    res.status(200).send(result)
+})
+
+app.get("/users/:id/purchases", (req: Request, res: Response) => {
+    const id = req.params.id
+    const result = purchase.find(card => card.userId === id)
+    res.status(200).send(result)
+})
+
+app.delete("/users/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+    const index = users.findIndex((item) => item.id === id)
+    console.log(index)
+    res.status(200).send("Usuário apagado com sucesso")
+})
+
+app.delete("/products/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+    const index = prod.findIndex((prod) => prod.id === id)
+    console.log(index)
+    res.status(200).send("Produto apagado com sucesso")
+})
+
+app.put("/users/:id", (req: Request, res: Response) => {
+    const id = req.params.index
+    const newEmail = req.body.email as string | undefined
+    const newPassword = req.body.password as string | undefined
+    const result = users.find(users => users.id === id)
+    if(result){
+        result.email = newEmail || result.email
+        result.password = newPassword || result.password
+    }
+    res.status(200).send("Atualização realizada com sucesso")
+})
+
+app.put("/products/:id", (req: Request, res: Response) => {
+    const id = req.params.index
+    const newName = req.body.name as string | undefined
+    const newPrice = req.body.price as number | undefined
+    const newCategory = req.body.category as Category | undefined
+    const result = prod.find(prod => prod.id === id)
+    if(result){
+        result.name = newName || result.name
+        result.price = newPrice || result.price
+        result.category = newCategory || result.category
+    }
+    res.status(200).send("Atualização realizada com sucesso")
+})
