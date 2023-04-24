@@ -55,4 +55,45 @@ VALUES
 ("pr02", 90, 0, "u05"),
 ("pr03", 77, 0, "u05"),
 ("pr04", 58, 0, "u05"),
-("pr05", 150, 0, "u06"):
+("pr05", 150, 0, "u06");
+
+UPDATE purchases
+SET created_at = datetime()
+WHERE id = "pr01";
+
+UPDATE purchases
+SET created_at = datetime()
+WHERE id = "pr02";
+
+UPDATE purchases
+SET created_at = datetime()
+WHERE id = "pr03";
+
+UPDATE purchases
+SET created_at = datetime()
+WHERE id = "pr04";
+
+UPDATE purchases
+SET created_at = datetime()
+WHERE id = "pr05";
+
+SELECT * FROM purchases
+INNER JOIN users
+ON purchases.buyer_id = users.id
+WHERE users.id = "u05";
+
+CREATE TABLE purchases_products(
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases (id),
+    FOREIGN KEY (product_id) REFERENCES products (id)
+);
+
+INSERT INTO purchases_products
+VALUES
+("pr01", "p02", 2),
+("pr02", "p04", 1),
+("pr03", "p02", 1),
+("pr04", "p05", 1),
+("pr05", "p03", 2);
