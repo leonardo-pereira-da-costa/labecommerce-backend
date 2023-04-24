@@ -9,14 +9,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.listen(3003, () => {
-    console.log("servidor rodando na porta 3003");
+    console.log("Servidor rodando na porta 3003");
 })
 
 app.get('/products', async (req: Request, res: Response) => {
     try {
-        const result = await db.raw(`
-        SELECT * FROM products;
-        `)
+        const result: TProduct = await db("products")
         res.status(200).send(result)
 
     } catch(error) {
@@ -30,10 +28,8 @@ app.get('/products', async (req: Request, res: Response) => {
 
 app.get('/users', async (req: Request, res: Response) => {
     try {
-        const result = await db.raw(`
-        SELECT * FROM users;
-        `)
-       res.status(200).send(result)
+        const result: TUsers = await db("users")
+        res.status(200).send(result)
 
     } catch(error) {
         console.log(error)
@@ -51,14 +47,16 @@ app.get('/products/search', async (req: Request, res: Response) => {
             res.status(404)
             throw new Error("Busca deve ter ao menos um caracter.")
         }
+
         if(typeof q !== "string") {
             throw new Error("'q' deve ser do tipo 'string'.")
         }
-        const result = await db.raw(`
-        SELECT * FROM products AS searchProductsByName
-        WHERE name LIKE "%${q}%";
-    `)
-    res.status(200).send(result)
+
+        const result = await db("products")
+        .select("*")
+        .where("name", "LIKE", `%${q}%`)
+
+        res.status(200).send(result)
 
     } catch(error) {
         console.log(error)
@@ -77,28 +75,34 @@ app.post('/users', async (req: Request, res: Response) => {
             res.status(400)
             throw new Error("'id deve ser passado no body")
         }
+
         if(typeof id !== "string"){
             res.status(400)
             throw new Error("'id' deve ser do tipo 'string'")
         }
+
         if(!email){
             res.status(400)
             throw new Error("'email' deve ser passado no body")
         }
+
         if(typeof email !== "string"){
             res.status(400)
             throw new Error("'email' deve ser do tipo 'string'")
         }
+
         if(!password){
             res.status(400)
             throw new Error("'password' deve ser passado no body")
         }
+
         if(typeof password !== "string"){
             res.status(400);
             throw new Error("'password' deve ser do tipo 'string'")
         }
         
         const searchId = users.find((user) => user.id === id)
+
         if(searchId){
             res.status(400)
             throw new Error("Id já existente.")
@@ -112,22 +116,17 @@ app.post('/users', async (req: Request, res: Response) => {
     
         const newUser: TUsers = {id, email, password}
 
-        await db.raw(`
-        INSERT INTO users (id, email, password)
-        VALUES ("${id}", "${email}", "${password}");
-        `)
-
-        await db.raw(`
-        UPDATE users
-        SET created_at = DATE('now')
-        WHERE id = "${id}";
-        `)
+        await db.insert({
+            id: id,
+            email: email,
+            password: password
+        })
+        .into("users")
 
         users.push(newUser)
         res.status(201).send("Usuário cadastrado com sucesso.")
 
     } catch(error) {
-       
     if(res.statusCode === 200){
         res.status(500)
       }
@@ -181,7 +180,7 @@ app.post('/products', async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'price' deve ser do tipo 'number'")
             }
-          }
+        }
 
         if(category !== undefined){
             if(
@@ -190,10 +189,13 @@ app.post('/products', async (req: Request, res: Response) => {
                 category !== Category.SHOES
             )
 
-        await db.raw(`
-        INSERT INTO products (id, name, price, category)
-        VALUES ("${id})", "${name}", "${price}", ${category}");
-        `)
+        await db.insert({
+            id: id, 
+            name: name,
+            price: price,
+            category: category
+        })
+        .into("products")
 
         res.status(200).send("produto cadastrado")
 
@@ -218,16 +220,14 @@ app.post('/products', async (req: Request, res: Response) => {
         console.log(error)
         if (res.statusCode === 200) {
         res.status(500)
-    }
-
-    res.send("Erro inesperado.")
+        }
+        res.send("Erro inesperado.")
 
     }
 })
 
 app.post("/purchases", async (req: Request, res: Response) => {
     try {
-
       const { userId, productId, quantity, totalPrice }: TPurchases = req.body
   
     if(!userId){
@@ -252,39 +252,44 @@ app.post("/purchases", async (req: Request, res: Response) => {
 
     if(userId !== undefined){
         if (typeof userId !== "string"){
-          res.status(400)
-          throw new Error("'userId' deve ser do tipo 'string'")
+            res.status(400)
+            throw new Error("'userId' deve ser do tipo 'string'")
         }
     }
 
     if(productId !== undefined){
         if (typeof productId !== "string"){
-          res.status(400)
-          throw new Error("'productId' deve ser do tipo 'string'")
+            res.status(400)
+            throw new Error("'productId' deve ser do tipo 'string'")
         }
     }
 
     if(quantity !== undefined){
         if (typeof quantity !== "number"){
-          res.status(400)
-          throw new Error("'quantity' deve ser do tipo 'number'")
+            res.status(400)
+            throw new Error("'quantity' deve ser do tipo 'number'")
         }
     }
 
       if(totalPrice !== undefined){
         if(typeof totalPrice !== "number"){
-          res.status(400)
-          throw new Error("'totalPrice' deve ser do tipo 'number'")
+            res.status(400)
+            throw new Error("'totalPrice' deve ser do tipo 'number'")
         }
     }
 
-    await db.raw(`
-        INSERT INTO products (userId, productId, quantity, totalPrice)
-        VALUES ("${userId}", "${productId}", "${quantity}", "${totalPrice}");
-        `)
+        await db.insert({
+            userId: userId,
+            productId: productId,
+            quantity: quantity,
+            totalPrice: totalPrice
+        })
+        .into("purchases")
+
         res.status(200).send(`Pedido cadastrado.`)
 
     const searchUserId = users.find((user) => user.id === userId)
+
     if(!searchUserId){
         res.status(404)
         throw new Error(
@@ -310,6 +315,7 @@ app.post("/purchases", async (req: Request, res: Response) => {
 
     const newPurchase: TPurchases = { userId, productId, quantity, totalPrice }
     purchase.push(newPurchase)
+
     res.status(201).send("Compra efetuada")
 
     } catch (error) {
@@ -323,12 +329,10 @@ app.post("/purchases", async (req: Request, res: Response) => {
 
   app.get("/products/:id", async (req: Request, res: Response) => {
     try {
-        const id = req.params.id
-
-        const result = await db.raw(`
-        SELECT * FROM products
-        WHERE id = "${id}"
-        `);
+        const result = await db
+        .select("*")
+        .from("products")
+        .where("id")
 
         if(!result){
             res.status(404)
@@ -348,11 +352,10 @@ app.post("/purchases", async (req: Request, res: Response) => {
 
 app.get("/users/:id/purchases", async (req: Request, res: Response) => {
     try {
-        const id = req.params.id
-
-        const result = await db.raw(`
-        SELECT * FROM purchases
-        WHERE buyerd_id = "${id}"`);
+        const result = await db
+        .select("*")
+        .from("purchases")
+        .where("id")
 
         if(!result){ res.status(404)
         throw new Error("Compra não foi encontrada. Tente novamente.")}
