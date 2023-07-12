@@ -1,4 +1,4 @@
-import { knex } from "knex";
+import { knex } from "knex"
 
 export const db = knex({
     client: "sqlite3",
@@ -13,4 +13,4 @@ export const db = knex({
             conn.run("PRAGMA foreign_keys = ON", cb)
         }
     }
-});
+})
