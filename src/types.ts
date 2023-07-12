@@ -1,27 +1,40 @@
-import { type } from "os"
-
 export type TUsers = {
     id: string,
+    name: string,
     email: string,
-    password: string
+    password: string,
+    createdAt?: string 
 }
 
 export type TProduct = {
     id: string,
     name: string,
     price: number,
-    category: string
+    description: string,
+    imageUrl: string
 }
 
 export type TPurchases = {
-    userId: string,
-    productId: string,
-    quantity: number,
-    totalPrice: number
+    id: string,
+    buyer: string,
+    products: {
+        id: string,
+        quantity: number
+    }[]
 }
 
- export enum Category {
-    CLOTHES = "roupas",
-    SHOES = "calçados",
-    ACCESSORIES = "acessorios"
+export type TUsersDB = {
+    id: string,
+    name: string,
+    email: string,
+    password: string,
+    created_at: string
+}
+
+export type TProductsDB = {
+    id: string,
+    name: string,
+    price: number,
+    description: string,
+    image_url: string
 }
